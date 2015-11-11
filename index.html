@@ -4,134 +4,48 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Test</title>
     <script type='text/javascript' src='paperjs-v0.9.25/dist/paper-full.js'></script>
-    <script type='text/javascript'>
-      var whatnowcreating = 0;
-      var needhidemenu = true;
-      function notHideMenu() {
-        needhidemenu = false;
-      }
-      function hideMenu(yestohide) {
-        if (typeof(yestohide) == 'boolean') {
-          needhidemenu = yestohide; 
-        }
-        if (needhidemenu) {
-          document.getElementById('menu').style['display'] = 'none';
-        } else {
-          needhidemenu = true;
-          setTimeout('hideMenu();', 2000);
-        }
-      }
-      document.oncontextmenu = function(event){
-        if (whatnowcreating != 0) {
-          if (whatnowcreating < 0) {
-            whatnowcreating = 0;
-          }
-          return false;
-        }
-        var can = document.getElementById('myCanvas');
-        if ((event.x > can.clientLeft) && (event.x < can.clientLeft + can.clientWidth) && (event.y > can.clientTop) && (event.y < can.clientTop + can.clientHeight)) {
-          var menu = document.getElementById('menu');
-          menu.style['display'] = 'block';
-          menu.style['left'] = event.x + 'px';
-          menu.style['top'] = event.y + 'px';
-          hideMenu(false);
-        }
-        return false;
-      }
-      function startCreate(what){
-        whatnowcreating = what;
-        hideMenu(true);
-      }
-      function showNewElement(){
-        var olddata = document.getElementById('whatadded').innerHTML;
-        // console.log(whatnowcreating);
-        if (whatnowcreating == 1) {
-          olddata += document.getElementById('objlib').getElementsByClassName('line')[0].outerHTML;
-          whatnowcreating = -1;
-        } else if (whatnowcreating == 2) {
-          olddata += document.getElementById('objlib').getElementsByClassName('arc')[0].outerHTML;
-          whatnowcreating = 0;
-        } else if (whatnowcreating == 3) {
-          olddata += document.getElementById('objlib').getElementsByClassName('text')[0].outerHTML;
-          whatnowcreating = 0;
-        } else if (whatnowcreating == 4) {
-          olddata += document.getElementById('objlib').getElementsByClassName('circle')[0].outerHTML;
-          whatnowcreating = 0;
-        } else if (whatnowcreating == 5) {
-          olddata += document.getElementById('objlib').getElementsByClassName('polygon')[0].outerHTML;
-          whatnowcreating = 0;
-        }
-        document.getElementById('whatadded').innerHTML = olddata;
-      }
-    </script>
-    <!--script type="text/paperscript" src="mylib.js" canvas="myCanvas"></script-->
-    <script type="text/paperscript" src="solution.js" canvas="myCanvas"></script>
+    <script type='text/javascript' src='libs.js'></script>
+    <script type="text/paperscript" src="mypaper.js" canvas="myCanvas"></script>
+    <link rel='stylesheet' href="styles.css" type="text/css">
   </head>
-  <style type='text/css'>
-    body {
-      border: 1px solid green; 
-      width: 100%;
-    }
-    #myCanvas {
-      border: 1px solid red;
-    }
-    #objlib {
-      display: none;
-    }
-    #menu {
-      position: absolute; 
-      width: 200px; 
-      min-height: 50px; 
-      border: 1px solid black;
-      background-color: white;
-      padding: 5px;
-      display: none;
-    }
-    #menu > div:hover {
-      background-color: lightgray;
-      cursor: pointer;
-    }
-  </style>
-  <body>
-    <table border='1'>
-      <tbody>
-        <tr>
-          <td>
-            <canvas id="myCanvas" width='600' height='400'></canvas>
-          </td>
-          <td id='whatadded'></td>
-        </tr>
-      </tbody>
-    </table>
-    <div id='objlib'>
-      <div class='line'>
-        <span>Линия</span>
+  <body onload="initcanvas();">
+    <div id='paintarea'>
+      <div class='buttons'>
+        <a href='#' onclick='startCreate(1);'><img alt='Создать линию' src='images/line.png'></a>
+        <a href='#' onclick='startCreate(2);'><img alt='Создать дугу' src='images/arc.png'></a>
+        <a href='#' onclick='startCreate(3);'><img alt='Создать текст' src='images/text.png'></a>
+        <a href='#' onclick='startCreate(4);'><img alt='Создать окружность' src='images/circle.png'></a>
       </div>
-      <div class='polygon'>
-        <span>Многоугольник</span>
+      <div>
+        <canvas id="myCanvas" width='600' height='400'></canvas>
       </div>
-      <div class='arc'>
-        <span>Дуга</span>
-      </div>
-      <div class='text'>
-        <span>Текст</span>
-      </div>
-      <div class='circle'>
-        <span>Окружность</span>
+      <div class='buttons'>
+        <a href='#' onclick='changeGrid(-10);'><img src='images/minus.png'></a>
+        <a href='#' onclick='changeGrid(10);'><img src='images/plus.png'></a>
       </div>
     </div>
-    <div id='menu' onmousemove="notHideMenu();">
-      <div>
-        <span onclick='startCreate(1);'>Создать линию</span>
+    <div id='whatadded'>
+    </div>
+    <div id='objlib'>
+      <div class='obj line'>
+        <span>Линия</span>
+        <a href='#'><img src='images/delete.png'></a>
       </div>
-      <div>
-        <span onclick='startCreate(2);'>Создать дугу</span>
+      <div class='obj polygon'>
+        <span>Многоугольник</span>
+        <a href='#'><img src='images/delete.png'></a>
       </div>
-      <div>
-        <span onclick='startCreate(3);'>Создать текст</span>
+      <div class='obj arc'>
+        <span>Дуга</span>
+        <a href='#'><img src='images/delete.png'></a>
       </div>
-      <div>
-        <span onclick='startCreate(4);'>Создать окружность</span>
+      <div class='obj text'>
+        <span>Текст</span>
+        <a href='#'><img src='images/delete.png'></a>
+      </div>
+      <div class='obj circle'>
+        <span>Окружность</span>
+        <a href='#'><img src='images/delete.png'></a>
       </div>
     </div>
   </body>

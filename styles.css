@@ -1,0 +1,17 @@
+body {
+  border: 1px solid green; 
+  width: 100%;
+}
+#myCanvas {
+  border: 1px solid red;
+}
+#objlib {
+  display: none;
+}
+#paintarea, #whatadded {
+  display: inline-block;
+}
+#whatadded {
+  border: 1px solid orange;
+  /*height: 100%;*/
+}
