@@ -11,17 +11,18 @@
   <body onload="initcanvas();">
     <div id='paintarea'>
       <div class='buttons'>
-        <a href='#' onclick='startCreate(1);'><img alt='Создать линию' src='images/line.png'></a>
-        <a href='#' onclick='startCreate(2);'><img alt='Создать дугу' src='images/arc.png'></a>
-        <a href='#' onclick='startCreate(3);'><img alt='Создать текст' src='images/text.png'></a>
-        <a href='#' onclick='startCreate(4);'><img alt='Создать окружность' src='images/circle.png'></a>
+        <a class='button line' href='#' onclick='startCreate(1);'><img alt='Создать линию' src='images/line.png'></a>
+        <a class='button arc' href='#' onclick='startCreate(2);'><img alt='Создать дугу' src='images/arc.png'></a>
+        <a class='button text' href='#' onclick='startCreate(3);'><img alt='Создать текст' src='images/text.png'></a>
+        <a class='button circle' href='#' onclick='startCreate(4);'><img alt='Создать окружность' src='images/circle.png'></a>
       </div>
       <div>
         <canvas id="myCanvas" width='600' height='400'></canvas>
       </div>
       <div class='buttons'>
-        <a href='#' onclick='changeGrid(-10);'><img src='images/minus.png'></a>
-        <a href='#' onclick='changeGrid(10);'><img src='images/plus.png'></a>
+        <a class='button less' href='#' onclick='changeGrid(-10);'><img src='images/minus.png'></a>
+        <a class='button more' href='#' onclick='changeGrid(10);'><img src='images/plus.png'></a>
+        <a class='button rotate' href='#' onclick='beginRotate();' style="display: none"><img src='images/rotate.png'></a>
       </div>
     </div>
     <div id='whatadded'>

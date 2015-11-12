@@ -13,5 +13,9 @@ body {
 }
 #whatadded {
   border: 1px solid orange;
+  vertical-align: top;
   /*height: 100%;*/
+}
+.button:hover{
+	background-color: lightgray;
 }
