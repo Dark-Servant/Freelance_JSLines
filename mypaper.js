@@ -1,24 +1,10 @@
-function nearPoint(mypoint) {
-  var point = new Point(Math.floor(mypoint.x / gridSize) * gridSize, Math.floor(mypoint.y / gridSize) * gridSize);
-  var points = [point, point + [0, gridSize], point + [gridSize, 0], point + [gridSize, gridSize]];
-  var len = (mypoint - point).length;
-  for (var i = 0; i < points.length; ++i) {
-    var leni = (points[i] - mypoint).length;
-    if (leni < len) {
-      len = leni;
-      point = points[i];
-    }
-  }
-  return point;
-}
-
 var beautyPoint = null;
 
 function setBeautyPoint(point){
+  if (beautyPoint != null) {
+    beautyPoint.remove();
+  }
   if (whatnowcreating > 0) {
-    if (beautyPoint != null) {
-      beautyPoint.remove();
-    }
     if (point != null) {
       beautyPoint = new Path.Circle(nearPoint(point), 2);
       beautyPoint.strokeColor = 'yellow';
@@ -39,33 +25,22 @@ function finishElement() {
   }
   setBeautyPoint(null);
   if (whatnowcreating > 0) {
-    currentElement['type'] = whatnowcreating;
-    elements.push(currentElement);
-    showNewElement(elements.length - 1);
+    showNewElement();
   }
   currentElement = null;
 }
 
-function selectElement(point){
-  if (selectedElement != null) {
-    selectedElement['sel']['obj'].selected = false;
-    selectedElement = null;
-  }
+function findElement(point){
+  unselectElement();
   for (var i = elements.length - 1; i > -1; --i) {
-    if ((elements[i]['obj'].bounds._x < point.x) && (elements[i]['obj'].bounds._x + elements[i]['obj'].bounds._width > point.x)) {
-      if ((elements[i]['obj'].bounds._y < point.y) && (elements[i]['obj'].bounds._y + elements[i]['obj'].bounds._height > point.y)) {
-        selectedElement = {
-          sel: elements[i],
-          pos: point//,
-          // moving: false
-        };
-        selectedElement['sel']['obj'].selected = true;
-        showRotate(true);
+    if ((elements[i]['obj'].bounds._x <= point.x) && (elements[i]['obj'].bounds._x + elements[i]['obj'].bounds._width >= point.x)) {
+      if ((elements[i]['obj'].bounds._y <= point.y) && (elements[i]['obj'].bounds._y + elements[i]['obj'].bounds._height >= point.y)) {
+        selectElement(i);
+        selectedElement['pos'] = point;
         return true;
       }
     }
   }
-  showRotate(false);
   return false;
 }
 
@@ -77,31 +52,41 @@ function onMouseDown(event) {
     }
     return;
   } else if (whatnowcreating < 1) {
-    // selectElement((rotateSelected) ? event.point : nearp);
-    selectElement(nearp);
+    findElement(nearp);
     return;
   }
-  if (whatnowcreating < 3) {
+  unselectElement();
+  if (whatnowcreating < 2) {
     if (currentElement == null) {
       currentElement = {
         obj: new Path(),
-        pcount: 0//,
-        // points: []
+        pcount: 0
       };
       currentElement['obj'].strokeColor = 'black';
     }
     ++currentElement['pcount'];
-    if ((whatnowcreating == 1) || (currentElement['pcount'] < 2)) {
-      // currentElement['points'].push([Math.round(nearp.x / gridSize), Math.round(nearp.y / gridSize)]);
-      currentElement['obj'].add(nearp);
-    } else {
-      // currentElement['points'].splice(1, 0,[Math.round(nearp.x / gridSize), Math.round(nearp.y / gridSize)]);
-      currentElement['obj'].insert(1, nearp);
-      currentElement['obj'].smooth();
+    // if ((whatnowcreating == 1) || (currentElement['pcount'] < 2)) {
+    //   // currentElement['points'].push([Math.round(nearp.x / gridSize), Math.round(nearp.y / gridSize)]);
+    currentElement['obj'].add(nearp);
+    // } else {
+    //   // currentElement['points'].splice(1, 0,[Math.round(nearp.x / gridSize), Math.round(nearp.y / gridSize)]);
+    //   currentElement['obj'].insert(1, nearp);
+    //   currentElement['obj'].smooth();
+    // }
+  } else if (whatnowcreating < 3) {
+    if (currentElement == null) {
+      currentElement = {
+        obj: null,
+        throughvector: null//,
+        // usecenter: false
+      };
+      // currentElement['obj'].strokeColor = 'black';
     }
+    // ++currentElement['pcount'];
   } else if (whatnowcreating == 4) {
       currentElement = {
-        obj: new Path.Ellipse(nearp, gridSize, gridSize),
+        obj: new Path.Circle(nearp, gridSize),
+        // obj: new Path.Ellipse(nearp - [gridSize, gridSize], gridSize * 2, gridSize * 2),
         // points: [[Math.round(nearp.x / gridSize), Math.round(nearp.y / gridSize)]],
         // radius: 1
       };
@@ -120,64 +105,105 @@ function onMouseDrag(event) {
     return;
   } else if (whatnowcreating < 1) {
     if (selectedElement != null) {
-      if (rotateSelected) {
-        selectedElement['sel']['obj'].rotate(
-          (nearp - selectedElement['sel']['obj'].position).angle - 
-          (selectedElement['pos'] - selectedElement['sel']['obj'].position).angle
-        );
-        selectedElement['pos'] = nearp;
-      } else {
-        selectedElement['sel']['obj'].position += nearp - selectedElement['pos'];
-        selectedElement['pos'] = nearp;
-        // selectedElement['moving'] = true;
-      }
+      selectedElement['sel']['obj'].position += nearp - selectedElement['pos'];
+      selectedElement['pos'] = nearp;
     }
     return;
   }
   setBeautyPoint(event.point);
-  if (whatnowcreating < 3) {
+  if (whatnowcreating < 2) {
     if (currentElement['obj']._segments.length > currentElement['pcount']) {
-      if (whatnowcreating == 1) {
-        currentElement['obj'].removeSegment(currentElement['pcount']);
+      // if (whatnowcreating == 1) {
+      currentElement['obj'].removeSegment(currentElement['pcount']);
         // currentElement['points'].splice(currentElement['pcount'], 1);
-      } else {
-        currentElement['obj'].removeSegment(1);
-        // currentElement['points'].splice(1, 1);
-      }
+      // } else {
+      //   currentElement['obj'].removeSegment(1);
+      //   // currentElement['points'].splice(1, 1);
+      // }
     }
-    if (whatnowcreating == 1) {
+    // if (whatnowcreating == 1) {
       // currentElement['points'].push([Math.round(nearp.x / gridSize), Math.round(nearp.y / gridSize)]);
-      currentElement['obj'].add(nearp);
-    } else {
-      // currentElement['points'].splice(1, 0,[Math.round(nearp.x / gridSize), Math.round(nearp.y / gridSize)]);
-      currentElement['obj'].insert(1, nearp);
-      currentElement['obj'].smooth();
-    }
-  } else if (whatnowcreating == 4) {
-    var c = currentElement['obj'].bounds.center;
-    // var r = Math.round((currentElement['obj'].bounds.center - event.point).length / gridSize);
-    // if (r > 0) {
-    //   var oldr = Math.round((currentElement['obj'].bounds.center - currentElement['obj']._segments[0].point).length / gridSize);
-    //   currentElement['obj'].scale(r / oldr);
-    //   currentElement['radius'] = r;
+    currentElement['obj'].add(nearp);
+    // } else {
+    //   // currentElement['points'].splice(1, 0,[Math.round(nearp.x / gridSize), Math.round(nearp.y / gridSize)]);
+    //   currentElement['obj'].insert(1, nearp);
+    //   currentElement['obj'].smooth();
     // }
+  } else if (whatnowcreating < 3) {
+    if (currentElement['throughvector'] == null) {
+      if (currentElement['obj'] != null) {
+        currentElement['obj'].remove();
+      }
+      var fpoint = nearPoint(event.downPoint);
+      // currentElement['points'] = [fpoint, fpoint + (nearp - fpoint) * 0.5, nearp];
+      currentElement['obj'] = new Path.Arc(fpoint, fpoint + (nearp - fpoint) * 0.5, nearp);
+    } else {
+      // console.log(currentElement['obj']);
+      var fpoint = currentElement['obj'].segments[0].point;
+      // console.log('fpoint: ' + fpoint);
+      var lpoint = currentElement['obj'].segments[currentElement['obj'].segments.length - 1].point;
+      var center = fpoint + (lpoint - fpoint) * 0.5;
+      // console.log('lpoint: ' + lpoint);
+      if (currentElement['obj'] != undefined) {
+        currentElement['obj'].remove();
+      }
+      currentElement['obj'] = new Path();
+      var through = null;
+      if (Math.round(lpoint.x - fpoint.x) < gridSize) {
+        // currentElement['obj'].add(center, new Point(event.point.x, center.y));
+        through = new Point(event.point.x, center.y);
+        // currentElement['obj'] = new Path.Arc(fpoint, new Point(event.point.x, center.y), lpoint);
+      } else if (Math.round(lpoint.y - fpoint.y) < gridSize) {
+        // currentElement['obj'].add(center, new Point(center.x, event.point.y));
+        through = new Point(center.x, event.point.y);
+        // currentElement['obj'] = new Path.Arc(fpoint, new Point(center.x, event.point.y), lpoint);
+      } else {
+        var paramA = (lpoint.y - fpoint.y) / (lpoint.x - fpoint.x);
+        // console.log('paramA: ' + paramA);
+        // var paramB = fpoint.y - fpoint.x * (lpoint.y - fpoint.y) / (lpoint.x - fpoint.x);
+        // console.log('paramB: ' + paramB);
+        // console.log('center: ' + center);
+        // y = - (x - center.x) * 1 / paramA  + center.y;
+        // y = (x - event.point.x) * paramA + event.point.y;
 
+        // - (x - center.x) * 1 / paramA  + center.y = (x - event.point.x) * paramA + event.point.y;
+        // - x / paramA + center.x / paramA  + center.y = paramA * x - paramA * event.point.x + event.point.y;
+        // - x / paramA - paramA * x = - paramA * event.point.x + event.point.y - center.x / paramA  - center.y;
+        // - x ( 1 / paramA + paramA ) = - paramA * event.point.x + event.point.y - center.x / paramA  - center.y;
+        // x ( 1 / paramA + paramA ) = paramA * event.point.x - event.point.y + center.x / paramA  + center.y;
+        // x = (paramA * event.point.x - event.point.y + center.x / paramA  + center.y) / ( 1 / paramA + paramA );
+        // x = (paramA * event.point.x - event.point.y + center.x / paramA  + center.y) / ( (1 + paramA * paramA) / paramA );
+        var x = paramA * (paramA * event.point.x - event.point.y + center.x / paramA  + center.y) / (1 + paramA * paramA);
+        var y = - (x - center.x) * 1 / paramA  + center.y;
+        through = new Point(x, y);
+        // var ln = new Path();
+        // ln.strokeColor = 'black';
+        // ln.add(center, new Point(x, y));
+        // currentElement['obj'].add(center, new Point(x, y));
+        // // x = (center.x / paramA  + center.y + event.point.x * paramA - event.point.y) * paramA / ( 1  + paramA * paramA)
+      }
+      currentElement['obj'] = new Path.Arc(fpoint, through, lpoint);
+      currentElement['throughvector'] = through - fpoint;
+    }
+    currentElement['obj'].strokeColor = 'black';
+  } else if (whatnowcreating == 4) {
+    var newwidth = nearp.x - currentElement['obj'].bounds._x;
+    var newheight = nearp.y - currentElement['obj'].bounds._y;
+    if (newwidth >= gridSize) {
+      currentElement['obj'].bounds.width = 2 * newwidth;
+    } else {
+      currentElement['obj'].bounds.width = 2 * gridSize;
+    }
+    if (newheight >= gridSize) {
+      currentElement['obj'].bounds.height = 2 * newheight;
+    } else {
+      currentElement['obj'].bounds.height = 2 * gridSize;
+    }
   }
 }
 
 function onMouseUp(event) {
-  if (event.event.button > 0) {
-    return;
-  } else if (whatnowcreating < 1) {
-    // if ((selectedElement != null) && selectedElement['moving']) {
-    //   selectedElement['sel']['points'] = [];
-    //   for (var i = 0; i < selectedElement['sel']['obj']._segments.length; ++i) {
-    //     selectedElement['sel']['points'].push([
-    //       Math.round(selectedElement['sel']['obj']._segments[i]._point._x / gridSize),
-    //       Math.round(selectedElement['sel']['obj']._segments[i]._point._y / gridSize)
-    //     ]);
-    //   }
-    // }
+  if ((event.event.button > 0) || (whatnowcreating < 1)) {
     return;
   }
   if (whatnowcreating == 1) {
@@ -199,8 +225,10 @@ function onMouseUp(event) {
       }
     }
   } else if (whatnowcreating == 2) {
-    if (currentElement['pcount'] > 1) {
+    if (currentElement['throughvector'] != null) {
       finishElement();
+    } else {
+      currentElement['throughvector'] = (currentElement['obj'].segments[currentElement['obj'].segments.length - 1].point - currentElement['obj'].segments[0].point) * 0.5;
     }
   } else if (whatnowcreating == 3) {
     var nearp = nearPoint(event.point);

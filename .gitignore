@@ -1,3 +1,4 @@
 docs/
 *.doc*
 !2074042.doc
+.htaccess

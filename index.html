@@ -11,42 +11,52 @@
   <body onload="initcanvas();">
     <div id='paintarea'>
       <div class='buttons'>
-        <a class='button line' href='#' onclick='startCreate(1);'><img alt='Создать линию' src='images/line.png'></a>
-        <a class='button arc' href='#' onclick='startCreate(2);'><img alt='Создать дугу' src='images/arc.png'></a>
-        <a class='button text' href='#' onclick='startCreate(3);'><img alt='Создать текст' src='images/text.png'></a>
-        <a class='button circle' href='#' onclick='startCreate(4);'><img alt='Создать окружность' src='images/circle.png'></a>
+        <img class='button line' onclick='startCreate(1);' alt='Создать линию' src='images/line.png'>
+        <img class='button arc' onclick='startCreate(2);' alt='Создать дугу' src='images/arc.png'>
+        <img class='button text' onclick='startCreate(3);' alt='Создать текст' src='images/text.png'>
+        <img class='button circle' onclick='startCreate(4);' alt='Создать окружность' src='images/circle.png'>
       </div>
       <div>
         <canvas id="myCanvas" width='600' height='400'></canvas>
       </div>
       <div class='buttons'>
-        <a class='button less' href='#' onclick='changeGrid(-10);'><img src='images/minus.png'></a>
-        <a class='button more' href='#' onclick='changeGrid(10);'><img src='images/plus.png'></a>
-        <a class='button rotate' href='#' onclick='beginRotate();' style="display: none"><img src='images/rotate.png'></a>
+        <img class='button less' onclick='changeGrid(-10);' src='images/minus.png'>
+        <img class='button more' onclick='changeGrid(10);' src='images/plus.png'>
+        <img class='button rotate' onclick='runRotate(-1);' style="display: none" src='images/rotate2.png'>
+        <img class='button rotate' onclick='runRotate(1);' style="display: none" src='images/rotate.png'>
       </div>
     </div>
     <div id='whatadded'>
     </div>
     <div id='objlib'>
-      <div class='obj line'>
-        <span>Линия</span>
-        <a href='#'><img src='images/delete.png'></a>
+      <div class='obj object1'>
+        <span onclick="chooseElement(this);">Линия</span>
+        <img class='delete' src='images/delete.png' onclick='delElement();'>
       </div>
-      <div class='obj polygon'>
-        <span>Многоугольник</span>
-        <a href='#'><img src='images/delete.png'></a>
+      <div class='obj object2'>
+        <span onclick="chooseElement(this);">Дуга</span>
+        <img class='delete' src='images/delete.png' onclick='delElement();'>
       </div>
-      <div class='obj arc'>
-        <span>Дуга</span>
-        <a href='#'><img src='images/delete.png'></a>
+      <div class='obj object3'>
+        <span onclick="chooseElement(this);">Текст</span>
+        <img class='delete' src='images/delete.png' onclick='delElement();'>
+        <div class='options'>
+          <img src='images/ok.png' onclick='editElement();'>
+          <input type='text' placeholder='Введите текст'>
+        </div>
       </div>
-      <div class='obj text'>
-        <span>Текст</span>
-        <a href='#'><img src='images/delete.png'></a>
+      <div class='obj object4'>
+        <span onclick="chooseElement(this);">Окружность</span>
+        <img class='delete' src='images/delete.png' onclick='delElement();'>
+        <div class='options'>
+          <img src='images/ok.png' onclick='editElement();'>
+          <input type='text' placeholder='Радиус по горизонтали'>
+          <input type='text' placeholder='Радиус по вертикали'>
+        </div>
       </div>
-      <div class='obj circle'>
-        <span>Окружность</span>
-        <a href='#'><img src='images/delete.png'></a>
+      <div class='obj object5'>
+        <span onclick="chooseElement(this);">Многоугольник</span>
+        <img class='delete' src='images/delete.png' onclick='delElement();'>
       </div>
     </div>
   </body>

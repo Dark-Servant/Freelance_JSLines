@@ -1,21 +1,25 @@
 body {
-  border: 1px solid green; 
+  /*border: 1px solid green; */
   width: 100%;
 }
 #myCanvas {
-  border: 1px solid red;
+  /*border: 1px solid red;*/
 }
-#objlib {
+#objlib, #whatadded img.delete, #whatadded .options {
   display: none;
 }
 #paintarea, #whatadded {
   display: inline-block;
 }
 #whatadded {
-  border: 1px solid orange;
+  border-left: 1px solid black;
   vertical-align: top;
+  padding-left: 2px;
   /*height: 100%;*/
 }
+.button, #whatadded span, #whatadded img {
+  cursor: pointer;
+}
 .button:hover{
-	background-color: lightgray;
+  background-color: lightgray;
 }
