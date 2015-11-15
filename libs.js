@@ -21,6 +21,7 @@ function showNewElement(){
   var whatadded = document.getElementById('whatadded');
   whatadded.innerHTML += document.getElementById('objlib').getElementsByClassName(elpointer)[0].outerHTML.replace(/(<span[^>]*>)([^<]*)/, "$1$2 " + allcounts[elpointer]);
   whatnowcreating = 0;
+  currentElement = null;
 }
 
 function unselectElement(){
@@ -315,6 +316,8 @@ function getXmlHttp() {
   return xmlhttp;
 }
 
+var downloader = null;
+
 function saveElements(obj){
   if (elements.length < 1) {
     return;
@@ -339,10 +342,29 @@ function saveElements(obj){
   xmlhttp.onreadystatechange = function() {
     if (xmlhttp.readyState == 4) {
       if(xmlhttp.status == 200) {
-        var file = document.createElement('a');
-        file.href = xmlhttp.responseText;
-        file.download = file.href.replace(/^[\W\w]*\//, '');
-        file.click();
+        if (downloader == null) {
+          downloader = document.createElement('a');
+          downloader.setAttribute('href', '#');
+          downloader.onclick = function(e){
+            e.preventDefault();
+            var lnk = this, xhr = getXmlHttp();
+            xhr.open("GET", lnk.dataset.link);
+            xhr.responseType = "blob";
+            xhr.overrideMimeType("octet/stream");
+            xhr.onload = function() {
+              if (xhr.status === 200) {
+                window.location = (URL || webkitURL).createObjectURL(xhr.response);
+              }
+            };
+            xhr.send();
+          }
+        }
+        downloader.setAttribute('data-link', xmlhttp.responseText);
+        // var file = document.createElement('a');
+        // file.setAttribute('href', xmlhttp.responseText);
+        // file.setAttribute('download', file.href.replace(/^[\W\w]*\//, ''));
+        // file.click();
+        downloader.click();
       }
     }
   };
@@ -350,9 +372,11 @@ function saveElements(obj){
 }
 
 function loadElements(obj){
+  // console.log('in function');
   var loader = document.createElement("input");
   loader.setAttribute("type", "file");
   loader.onchange = function(){
+    // console.log('were changes');
     var formData = new FormData();
     formData.append("thefile", loader.files[0]);
     formData.append("loaddata", 'true');
@@ -362,9 +386,11 @@ function loadElements(obj){
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         if(xhr.status == 200) {
+          // console.log('answer exists!');
           try{
             var olddata = JSON.parse(xhr.responseText.replace(/^\s+/, '').replace(/\s+$/, ''));
           } catch (e) {
+            console.log('error in data of loaded file');
             return;
           }
           createGrid(olddata['gridSize']);
@@ -381,7 +407,11 @@ function loadElements(obj){
           }
           paper.view.draw();
           gridSize = olddata['gridSize'];
+        // } else {
+        //   console.log('STATUS not 200');
         }
+      // } else {
+      //   console.log('READY STATE not 4');
       }
     };
   };

@@ -1,5 +1,5 @@
 <?php
-  // error_reporting(0);
+  error_reporting(0);
   if (isset($_POST['savedata'])) {
     if (!is_dir('userworks')) {
       mkdir('userworks');

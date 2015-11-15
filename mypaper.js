@@ -27,7 +27,6 @@ function finishElement() {
   if (whatnowcreating > 0) {
     showNewElement();
   }
-  currentElement = null;
 }
 
 function findElement(point){
