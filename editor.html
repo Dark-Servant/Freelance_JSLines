@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Test</title>
+    <title>Constructor</title>
     <script type='text/javascript' src='paperjs-v0.9.25/dist/paper-full.js'></script>
     <script type='text/javascript' src='libs.js'></script>
     <script type="text/paperscript" src="mypaper.js" canvas="myCanvas"></script>
@@ -24,6 +24,8 @@
         <img class='button more' onclick='changeGrid(10);' src='images/plus.png'>
         <img class='button rotate' onclick='runRotate(-1);' style="display: none" src='images/rotate2.png'>
         <img class='button rotate' onclick='runRotate(1);' style="display: none" src='images/rotate.png'>
+        <img class='button saving' onclick='saveElements(this);' src='images/save.png'>
+        <img class='button loading' onclick='loadElements(this);' src='images/open.png'>
       </div>
     </div>
     <div id='whatadded'>
@@ -57,6 +59,11 @@
       <div class='obj object5'>
         <span onclick="chooseElement(this);">Многоугольник</span>
         <img class='delete' src='images/delete.png' onclick='delElement();'>
+        <!--div class='options'>
+          <img src='images/ok.png' onclick='editElement();'>
+          <input type='text' placeholder='Длина'>
+          <input type='text' placeholder='Ширина'>
+        </div-->
       </div>
     </div>
   </body>
