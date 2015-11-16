@@ -7,8 +7,8 @@ function setBeautyPoint(point){
   if (whatnowcreating > 0) {
     if (point != null) {
       beautyPoint = new Path.Circle(nearPoint(point), 2);
-      beautyPoint.strokeColor = 'yellow';
-      beautyPoint.fillColor = 'yellow';
+      beautyPoint.strokeColor = 'red';
+      beautyPoint.fillColor = 'red';
     } else {
       beautyPoint = null;
     }

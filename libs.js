@@ -185,70 +185,68 @@ var elementLayer = null;
 
 function drawElements(newGridSize){
   elementLayer.clear();
-  // // for (var i = 0; i < elementLayer.children.length; ++i) {
-  // //   var point = new paper.Point(elementLayer.children[i].position._x * newGridSize / gridSize, elementLayer.children[i].position._x * newGridSize / gridSize);
-  // //   if (!/^PointText/.test(elementLayer.children[i].toString())) {
-  // //     elementLayer.children[i].scale(newGridSize / gridSize);
-  // //   }
-  // //   elementLayer.children[i].position = point;
-  // // }
-  // for (var i = 0; i < elements.length; ++i) {
-  //   if ((elements[i].type == 1) || (elements[i].type == 5)) {
-  //     var obj = new paper.Path();
-  //     obj.strokeColor = 'black';
-  //     for (var j = 0; j < elements[i].obj.segments.length; ++j) {
-  //       obj.add(new paper.Point(
-  //         Math.round(elements[i].obj.segments[j].point.x  * newGridSize / gridSize),
-  //         Math.round(elements[i].obj.segments[j].point.y  * newGridSize / gridSize)
-  //       ));
-  //     }
-  //     elements[i].obj.remove();
-  //     elements[i].obj = obj;
-  //   } else if (elements[i].type == 2) {
-  //     // elements[i].points = [
-  //     //   new paper.Point(elements[i].points[0].x * newGridSize / gridSize, elements[i].points[0].y * newGridSize / gridSize), 
-  //     //   new paper.Point(elements[i].points[1].x * newGridSize / gridSize, elements[i].points[1].y * newGridSize / gridSize), 
-  //     //   new paper.Point(elements[i].points[2].x * newGridSize / gridSize, elements[i].points[2].y * newGridSize / gridSize)
-  //     // ];
-  //     var obj = new paper.Path.Arc(
-  //       new paper.Point(elements[i].segments[0].point.x * newGridSize / gridSize, elements[i].segments[0].point.y * newGridSize / gridSize), 
-  //       new paper.Point(
-  //         (elements[i].segments[0].point.x + elements[i].throughvector.x) * newGridSize / gridSize, 
-  //         (elements[i].segments[0].point.y + elements[i].throughvector.y) * newGridSize / gridSize
-  //       ),
-  //       new paper.Point(
-  //         elements[i].segments[elements[i].segments.length - 1].point.x * newGridSize / gridSize, 
-  //         elements[i].segments[2].point.y * newGridSize / gridSize
-  //       )
-  //     );
-  //     obj.strokeColor = 'black';
-  //     elements[i].obj.remove();
-  //     elements[i].obj = obj;
-  //     elements[i].throughvector.x *= newGridSize / gridSize;
-  //     elements[i].throughvector.y *= newGridSize / gridSize;
-  //   } else if (elements[i].type == 3) {
-  //     var obj = new paper.PointText(new paper.Point(elements[i].position[0] * newGridSize, elements[i].position[1] * newGridSize));
-  //     obj.fillColor = elements[i].obj.fillColor;
-  //     obj.font = elements[i].obj.font;
-  //     obj.fontSize = elements[i].obj.fontSize;
-  //     obj.content = elements[i].obj.content;
-  //     elements[i].obj.remove();
-  //     elements[i].obj = obj;
-  //   } else if (elements[i].type == 4) {
-  //     var obj = new paper.Path.Circle();
-  //     // var obj = new paper.Path.Ellipse(
-  //     //   new paper.Point(
-  //     //     Math.round(elements[i].obj.bounds._x * newGridSize / gridSize), 
-  //     //     Math.round(elements[i].obj.bounds._y * newGridSize / gridSize)
-  //     //   ), 
-  //     //   Math.round(elements[i].obj.bounds.width * newGridSize / gridSize),
-  //     //   Math.round(elements[i].obj.bounds.height * newGridSize / gridSize)
-  //     // );
-  //     obj.strokeColor = 'black';
-  //     elements[i].obj.remove();
-  //     elements[i].obj = obj;
+  // for (var i = 0; i < elementLayer.children.length; ++i) {
+  //   var point = new paper.Point(elementLayer.children[i].position._x * newGridSize / gridSize, elementLayer.children[i].position._x * newGridSize / gridSize);
+  //   if (!/^PointText/.test(elementLayer.children[i].toString())) {
+  //     elementLayer.children[i].scale(newGridSize / gridSize);
   //   }
+  //   elementLayer.children[i].position = point;
   // }
+  for (var i = 0; i < elements.length; ++i) {
+    if ((elements[i].type == 1) || (elements[i].type == 5)) {
+      var obj = new paper.Path();
+      obj.strokeColor = 'black';
+      for (var j = 0; j < elements[i].obj.segments.length; ++j) {
+        obj.add(new paper.Point(
+          Math.round(elements[i].obj.segments[j].point.x  * newGridSize / gridSize),
+          Math.round(elements[i].obj.segments[j].point.y  * newGridSize / gridSize)
+        ));
+      }
+      elements[i].obj.remove();
+      elements[i].obj = obj;
+    } else if (elements[i].type == 2) {
+      var obj = new paper.Path.Arc(
+        new paper.Point(elements[i].obj.segments[0].point.x * newGridSize / gridSize, elements[i].obj.segments[0].point.y * newGridSize / gridSize), 
+        new paper.Point(
+          (elements[i].obj.segments[0].point.x + elements[i].throughvector.x) * newGridSize / gridSize, 
+          (elements[i].obj.segments[0].point.y + elements[i].throughvector.y) * newGridSize / gridSize
+        ),
+        new paper.Point(
+          elements[i].obj.segments[elements[i].obj.segments.length - 1].point.x * newGridSize / gridSize, 
+          elements[i].obj.segments[elements[i].obj.segments.length - 1].point.y * newGridSize / gridSize
+        )
+      );
+      obj.strokeColor = 'black';
+      elements[i].obj.remove();
+      elements[i].obj = obj;
+      elements[i].throughvector.x *= newGridSize / gridSize;
+      elements[i].throughvector.y *= newGridSize / gridSize;
+    } else if (elements[i].type == 3) {
+      var obj = new paper.PointText(new paper.Point(elements[i].position[0] * newGridSize, elements[i].position[1] * newGridSize));
+      obj.fillColor = elements[i].obj.fillColor;
+      obj.font = elements[i].obj.font;
+      obj.fontSize = elements[i].obj.fontSize;
+      obj.content = elements[i].obj.content;
+      elements[i].obj.remove();
+      elements[i].obj = obj;
+    } else if (elements[i].type == 4) {
+      var obj = new paper.Path.Circle(
+      // var obj = new paper.Path.Ellipse(
+        new paper.Point(
+          Math.round(elements[i].obj.bounds._x * newGridSize / gridSize) + newGridSize, 
+          Math.round(elements[i].obj.bounds._y * newGridSize / gridSize) + newGridSize
+        ),
+        newGridSize
+        // Math.round(elements[i].obj.bounds.width * newGridSize / gridSize),
+        // Math.round(elements[i].obj.bounds.height * newGridSize / gridSize)
+      );
+      obj.bounds.width = Math.round(elements[i].obj.bounds.width * newGridSize / gridSize);
+      obj.bounds.height = Math.round(elements[i].obj.bounds.height * newGridSize / gridSize);
+      obj.strokeColor = 'black';
+      elements[i].obj.remove();
+      elements[i].obj = obj;
+    }
+  }
 }
 
 function createGrid(newGridSize) {
