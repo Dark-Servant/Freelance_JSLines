@@ -15,6 +15,7 @@ body {
   border-left: 1px solid black;
   vertical-align: top;
   padding-left: 2px;
+  overflow-y: auto;
   /*height: 100%;*/
 }
 .button, #whatadded span, #whatadded img {
@@ -22,4 +23,9 @@ body {
 }
 .button:hover{
   background-color: lightgray;
+}
+#myCanvasDiv{
+  overflow: auto;
+  max-width: 1300px;
+  max-height: 900px;
 }

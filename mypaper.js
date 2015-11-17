@@ -48,6 +48,9 @@ function onMouseDown(event) {
   if (event.event.button > 0) {
     if ((event.event.button == 2) && (whatnowcreating == 1)) {
       finishElement();
+    } else if ((currentElement != null) && (currentElement['obj'] != null)) {
+      currentElement['obj'].remove();
+      currentElement['obj'] = null;
     }
     return;
   } else if (whatnowcreating < 1) {
@@ -74,7 +77,7 @@ function onMouseDown(event) {
     }
   } else if (whatnowcreating == 4) {
       currentElement = {
-        obj: new Path.Circle(nearp, gridSize),
+        obj: new Path.Circle(nearp + [gridSize * 0.5, gridSize * 0.5], gridSize * 0.5),
       };
       currentElement['obj'].strokeColor = 'black';
   }
@@ -134,12 +137,12 @@ function onMouseDrag(event) {
     if (newwidth >= gridSize) {
       currentElement['obj'].bounds.width = 2 * newwidth;
     } else {
-      currentElement['obj'].bounds.width = 2 * gridSize;
+      currentElement['obj'].bounds.width = gridSize;
     }
     if (newheight >= gridSize) {
       currentElement['obj'].bounds.height = 2 * newheight;
     } else {
-      currentElement['obj'].bounds.height = 2 * gridSize;
+      currentElement['obj'].bounds.height = gridSize;
     }
   }
 }

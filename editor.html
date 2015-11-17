@@ -16,8 +16,8 @@
         <img class='button text' onclick='startCreate(3);' alt='Создать текст' src='images/text.png'>
         <img class='button circle' onclick='startCreate(4);' alt='Создать окружность' src='images/circle.png'>
       </div>
-      <div>
-        <canvas id="myCanvas" width='600' height='400'></canvas>
+      <div id="myCanvasDiv">
+        <canvas id="myCanvas" width='1200' height='800'></canvas>
       </div>
       <div class='buttons'>
         <img class='button less' onclick='changeGrid(-10);' src='images/minus.png'>
@@ -34,36 +34,71 @@
       <div class='obj object1'>
         <span onclick="chooseElement(this);">Линия</span>
         <img class='delete' src='images/delete.png' onclick='delElement();'>
+        <div class='options'>
+          <div class='simple'>
+            <span>Толщина линий(px)</span><input type='text' size='6' class='linewidth'>
+          </div>
+          <img src='images/ok.png' onclick='editElement();'>
+        </div>
       </div>
       <div class='obj object2'>
         <span onclick="chooseElement(this);">Дуга</span>
         <img class='delete' src='images/delete.png' onclick='delElement();'>
+        <div class='options'>
+          <div class='simple'>
+            <span>Толщина линий(px)</span><input type='text' size='6' class='linewidth'>
+          </div>
+          <img src='images/ok.png' onclick='editElement();'>
+        </div>
       </div>
       <div class='obj object3'>
         <span onclick="chooseElement(this);">Текст</span>
         <img class='delete' src='images/delete.png' onclick='delElement();'>
         <div class='options'>
+          <div class='simple'>
+            <div>
+              <span>Значение</span><input type='text' class='textvalue'>
+            </div>
+            <span>Размер шрифта (px)</span><input type='text' size='6' class='textsize'>
+          </div>
           <img src='images/ok.png' onclick='editElement();'>
-          <input type='text' placeholder='Введите текст'>
         </div>
       </div>
       <div class='obj object4'>
         <span onclick="chooseElement(this);">Окружность</span>
         <img class='delete' src='images/delete.png' onclick='delElement();'>
         <div class='options'>
+          <div class='special'>
+            <input type='checkbox' onclick='showSpecial();'><span>Особые параметры</span>
+            <div>
+              <span>Число 1</span><input type='text' size='6' disabled>
+              <span>Число 2</span><input type='text' size='6' disabled>
+            </div>
+          </div>
+          <div class='simple'>
+            <span>Ширина</span><input type='text' size='6' class='width'>
+            <span>Высота</span><input type='text' size='6' class='height'>
+            <span>Толщина линий(px)</span><input type='text' size='6' class='linewidth'>
+          </div>
           <img src='images/ok.png' onclick='editElement();'>
-          <input type='text' placeholder='Радиус по горизонтали'>
-          <input type='text' placeholder='Радиус по вертикали'>
         </div>
       </div>
       <div class='obj object5'>
         <span onclick="chooseElement(this);">Многоугольник</span>
         <img class='delete' src='images/delete.png' onclick='delElement();'>
-        <!--div class='options'>
+        <div class='options'>
+          <div class='special'>
+            <input type='checkbox' onclick='showSpecial();'><span>Особые параметры</span>
+            <div>
+              <span>Число 1</span><input type='text' size='6' disabled>
+              <span>Число 2</span><input type='text' size='6' disabled>
+            </div>
+          </div>
+          <div class='simple'>
+            <span>Толщина линий(px)</span><input type='text' size='6' class='linewidth'>
+          </div>
           <img src='images/ok.png' onclick='editElement();'>
-          <input type='text' placeholder='Длина'>
-          <input type='text' placeholder='Ширина'>
-        </div-->
+        </div>
       </div>
     </div>
   </body>

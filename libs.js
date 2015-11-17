@@ -39,17 +39,47 @@ function unselectElement(){
   showRotate(false);
 }
 
-function setParam(num){
-  if (elements[num].type == 3) {
-    document.getElementById('whatadded').children[num].querySelector('.options input').value = elements[num].obj.content;
-  } else if (elements[num].type == 4) {
-    var r = document.getElementById('whatadded').children[num].querySelectorAll('.options input');
-    r[0].value = Math.round(elements[num].obj.bounds.width * 0.5 / gridSize);
-    r[1].value = Math.round(elements[num].obj.bounds.height * 0.5 / gridSize);
-  } else if (elements[num].type == 5) {
-    var r = document.getElementById('whatadded').children[num].querySelectorAll('.options input');
-    r[0].value = Math.round(elements[num].obj.bounds.width / gridSize);
-    r[1].value = Math.round(elements[num].obj.bounds.height / gridSize);
+function setParam(){
+  var listunit = document.getElementById('whatadded').children[selectedElement.num];
+  var linewidth = listunit.querySelector('.options .simple input.linewidth');
+  if (linewidth != undefined) {
+    linewidth.value = selectedElement.sel.obj.strokeWidth;
+  }
+  if (selectedElement.sel.type == 3) {
+    listunit.querySelector('.options .simple input.textvalue').value = selectedElement.sel.obj.content;
+    listunit.querySelector('.options .simple input.textsize').value = selectedElement.sel.obj.fontSize.replace(/\D+$/, '');
+  } else if (selectedElement.sel.type == 4) {
+    var wh = listunit.querySelector('.options .simple input.width');
+    if (wh != undefined) {
+      wh.value = Math.round(selectedElement.sel.obj.bounds.width / gridSize);
+    }
+    wh = listunit.querySelector('.options .simple input.height');
+    if (wh != undefined) {
+      wh.value = Math.round(selectedElement.sel.obj.bounds.height / gridSize);
+    }
+  }
+  if (selectedElement.sel.type > 3) {
+    if (selectedElement.sel.special == undefined) {
+      selectedElement.sel.special = null;
+    }
+    var special = listunit.querySelectorAll('.options .special input[type=text]');
+    if (selectedElement.sel.special == null) {
+      listunit.querySelector('.options .special input[type=checkbox]').removeAttribute('checked');
+      for (var i = 0; i < special.length; ++i) {
+        special[i].setAttribute('disabled', 'disabled');
+        special[i].value = '0';
+      }
+    } else {
+      listunit.querySelector('.options .special input[type=checkbox]').setAttribute('checked', 'checked');
+      for (var i = 0; i < special.length; ++i) {
+        special[i].removeAttribute('disabled');
+        if (typeof(selectedElement.sel.special[i]) != 'undefined') {
+          special[i].value = selectedElement.sel.special[i].toString();
+        } else {
+          special[i].value = '0';
+        }
+      }
+    }
   }
 }
 
@@ -64,7 +94,7 @@ function selectElement(num){
   var options = menuunit.getElementsByClassName('options')[0];
   if (options != undefined) {
     options.style['display'] = 'block';
-    setParam(num);
+    setParam();
   }
   selectedElement['sel']['obj'].selected = true;
   if ((elements[num]['type'] == 2) || (elements[num]['type'] == 5)) {
@@ -95,39 +125,82 @@ function delElement(){
   return true;
 }
 
+function showSpecial() {
+  if (selectedElement == null) {
+    return false;
+  }
+  var listunit = document.getElementById('whatadded').children[selectedElement.num];
+  var special = listunit.querySelectorAll('.options .special input[type=text]');
+  if (listunit.querySelector('.options .special input[type=checkbox]').checked) {
+    for (var i = 0; i < special.length; ++i) {
+      special[i].removeAttribute('disabled');
+    }
+  } else {
+    for (var i = 0; i < special.length; ++i) {
+      special[i].setAttribute('disabled', 'disabled');
+    }
+  }
+}
+
 function editElement(){
   if (selectedElement == null) {
     return false;
   }
+  var listunit = document.getElementById('whatadded').children[selectedElement.num];
+  var linewidth = listunit.querySelector('.options .simple input.linewidth');
+  if (linewidth != undefined) {
+    linewidth = linewidth.value.replace(/^\s+/, '').replace(/\s+$/, '');
+    if (/^\d+$/.test(linewidth) && (linewidth > '0')) {
+      selectedElement.sel.obj.strokeWidth = parseInt(linewidth);
+    } else {
+      return false;
+    }
+  }
   if (selectedElement.sel.type == 3) {
     selectedElement.sel.obj.content = 
-      document.getElementById('whatadded').children[selectedElement.num].querySelector('.options input').value.toString().replace(/^\s+/, '').replace(/\s+$/, '');
+      listunit.querySelector('.options .simple input.textvalue').value.toString().replace(/^\s+/, '').replace(/\s+$/, '');
+    var textsize = listunit.querySelector('.options .simple input.textsize').value.toString().replace(/^\s+/, '').replace(/\s+$/, '');
+    if (/^\d+$/.test(textsize) && (textsize > '0')) {
+      selectedElement.sel.obj.fontSize = textsize + 'px';
+    } else {
+      return false;
+    }
   } else if (selectedElement.sel.type == 4) {
-    var r = document.getElementById('whatadded').children[selectedElement.num].querySelectorAll('.options input');
-    var rtrue = [];
-    for (var ri = 0; ri < r.length; ++ri) {
-      var rval = r[ri].value.toString().replace(/^\s+/, '').replace(/\s+$/, '');
-      if (!/^\d+$/.test(rval)) {
-        return false;
+    var wh = listunit.querySelector('.options .simple input.width');
+    if (wh != undefined) {
+      wh = wh.value.toString().replace(/^\s+/, '').replace(/\s+$/, '');
+      if (/^\d+$/.test(wh) && (wh > '0')) {
+        selectedElement.sel.obj.bounds.width = parseInt(wh) * gridSize;
       } else {
-        rtrue.push(parseInt(rval));
+        return false;
       }
     }
-    selectedElement.sel.obj.bounds.width = rtrue[0] * 2 * gridSize;
-    selectedElement.sel.obj.bounds.height = rtrue[1] * 2 * gridSize;
-  } else if (selectedElement.sel.type == 5) {
-    var r = document.getElementById('whatadded').children[selectedElement.num].querySelectorAll('.options input');
-    var rtrue = [];
-    for (var ri = 0; ri < r.length; ++ri) {
-      var rval = r[ri].value.toString().replace(/^\s+/, '').replace(/\s+$/, '');
-      if (!/^\d+$/.test(rval)) {
-        return false;
+    wh = listunit.querySelector('.options .simple input.height');
+    if (wh != undefined) {
+      wh = wh.value.toString().replace(/^\s+/, '').replace(/\s+$/, '');
+      if (/^\d+$/.test(wh) && (wh > '0')) {
+        selectedElement.sel.obj.bounds.height = parseInt(wh) * gridSize;
       } else {
-        rtrue.push(parseInt(rval));
+        return false;
       }
     }
-    selectedElement.sel.obj.bounds.width = rtrue[0] * gridSize;
-    selectedElement.sel.obj.bounds.height = rtrue[1] * gridSize;
+  }
+  if (selectedElement.sel.type > 3) {
+    var special = listunit.querySelectorAll('.options .special input[type=text]');
+    if (listunit.querySelector('.options .special input[type=checkbox]').checked) {
+      specialarr = [];
+      for (var i = 0; i < special.length; ++i) {
+        var sval = special[i].value.toString().replace(/^\s+/, '').replace(/\s+$/, '');
+        if (/^\d+$/.test(sval)) {
+          specialarr.push(sval);
+        } else {
+          return false;
+        }
+      }
+      selectedElement.sel.special = specialarr;
+    } else {
+      selectedElement.sel.special = null;
+    }
   }
   unselectElement();
   paper.view.draw();
@@ -202,6 +275,7 @@ function drawElements(newGridSize){
           Math.round(elements[i].obj.segments[j].point.y  * newGridSize / gridSize)
         ));
       }
+      obj.strokeWidth = elements[i].obj.strokeWidth;
       elements[i].obj.remove();
       elements[i].obj = obj;
     } else if (elements[i].type == 2) {
@@ -217,6 +291,7 @@ function drawElements(newGridSize){
         )
       );
       obj.strokeColor = 'black';
+      obj.strokeWidth = elements[i].obj.strokeWidth;
       elements[i].obj.remove();
       elements[i].obj = obj;
       elements[i].throughvector.x *= newGridSize / gridSize;
@@ -227,6 +302,7 @@ function drawElements(newGridSize){
       obj.font = elements[i].obj.font;
       obj.fontSize = elements[i].obj.fontSize;
       obj.content = elements[i].obj.content;
+      obj.strokeWidth = elements[i].obj.strokeWidth;
       elements[i].obj.remove();
       elements[i].obj = obj;
     } else if (elements[i].type == 4) {
@@ -243,6 +319,7 @@ function drawElements(newGridSize){
       obj.bounds.width = Math.round(elements[i].obj.bounds.width * newGridSize / gridSize);
       obj.bounds.height = Math.round(elements[i].obj.bounds.height * newGridSize / gridSize);
       obj.strokeColor = 'black';
+      obj.strokeWidth = elements[i].obj.strokeWidth;
       elements[i].obj.remove();
       elements[i].obj = obj;
     }
@@ -250,7 +327,22 @@ function drawElements(newGridSize){
 }
 
 function createGrid(newGridSize) {
-  var maxSize = (paper.view._viewSize._height > paper.view._viewSize._width) ? paper.view._viewSize._height : paper.view._viewSize._width;
+  var defaultSize = {width: 1200, height: 800};
+  // if (elements.length > 0) {
+  //   for (var i = 0; i < elements.length; ++i) {
+  //     var wh = elements[i].obj.bounds.x + elements[i].obj.bounds.width;
+  //     if (wh > defaultSize.width) {
+  //       defaultSize.width = wh;
+  //     }
+  //     wh = elements[i].obj.bounds.y + elements[i].obj.bounds.height;
+  //     if (wh > defaultSize.height) {
+  //       defaultSize.height = wh;
+  //     }
+  //   }
+  // }
+  // document.getElementById('myCanvas').setAttribute('width', defaultSize.width);
+  // document.getElementById('myCanvas').setAttribute('height', defaultSize.height);
+  var maxSize = (defaultSize.height > defaultSize.width) ? defaultSize.height : defaultSize.width;
   if (gridLayer == null) {
     gridLayer = new paper.Layer();
   } else {
@@ -258,16 +350,16 @@ function createGrid(newGridSize) {
     paper.project._activeLayer = gridLayer;
   }
   for (var i = newGridSize; i < maxSize; i += newGridSize) {
-    if (i < paper.view._viewSize._height) {
+    if (i < defaultSize.height) {
       var p = new paper.Path();
-      p.add(new paper.Point(0, i), new paper.Point(paper.view._viewSize._width, i));
+      p.add(new paper.Point(0, i), new paper.Point(defaultSize.width, i));
       p.strokeColor = 'lightgray';
       p.strokeWidth = 0.5;
       p.dashArray = [2, 3];
     }
-    if (i < paper.view._viewSize._width) {
+    if (i < defaultSize.width) {
       var p = new paper.Path();
-      p.add(new paper.Point(i, 0), new paper.Point(i, paper.view._viewSize._height));
+      p.add(new paper.Point(i, 0), new paper.Point(i, defaultSize.height));
       p.strokeColor = 'lightgray';
       p.strokeWidth = 0.5;
       p.dashArray = [2, 3];
@@ -391,7 +483,6 @@ function loadElements(obj){
             console.log('error in data of loaded file');
             return;
           }
-          createGrid(olddata['gridSize']);
           elementLayer.clear();
           elements = [];
           allcounts = {};
@@ -403,6 +494,7 @@ function loadElements(obj){
             whatnowcreating = currentElement.type;
             showNewElement();
           }
+          createGrid(olddata['gridSize']);
           paper.view.draw();
           gridSize = olddata['gridSize'];
         // } else {
