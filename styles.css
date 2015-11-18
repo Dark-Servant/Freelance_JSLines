@@ -16,6 +16,10 @@ body {
   overflow-y: auto;
 }
 
+#whatadded > div {
+  padding: 2px;
+}
+
 .button, #whatadded span, #whatadded img {
   cursor: pointer;
 }
@@ -28,4 +32,16 @@ body {
   overflow: auto;
   max-width: 1215px;
   max-height: 815px;
+}
+
+.options span {
+  margin-right: 2px;
+}
+
+.options div {
+  margin-bottom: 2px;
+}
+
+.options .buttons {
+  text-align: right;
 }
