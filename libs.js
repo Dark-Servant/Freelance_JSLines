@@ -326,23 +326,13 @@ function drawElements(newGridSize){
   }
 }
 
+var areaSize = {};
+
 function createGrid(newGridSize) {
-  var defaultSize = {width: 1200, height: 800};
-  // if (elements.length > 0) {
-  //   for (var i = 0; i < elements.length; ++i) {
-  //     var wh = elements[i].obj.bounds.x + elements[i].obj.bounds.width;
-  //     if (wh > defaultSize.width) {
-  //       defaultSize.width = wh;
-  //     }
-  //     wh = elements[i].obj.bounds.y + elements[i].obj.bounds.height;
-  //     if (wh > defaultSize.height) {
-  //       defaultSize.height = wh;
-  //     }
-  //   }
-  // }
-  // document.getElementById('myCanvas').setAttribute('width', defaultSize.width);
-  // document.getElementById('myCanvas').setAttribute('height', defaultSize.height);
-  var maxSize = (defaultSize.height > defaultSize.width) ? defaultSize.height : defaultSize.width;
+  document.getElementById('myCanvas').setAttribute('width', areaSize.width);
+  document.getElementById('myCanvas').setAttribute('height', areaSize.height);
+  paper.view.viewSize = new paper.Size(areaSize.width, areaSize.height);
+  var maxSize = (areaSize.height > areaSize.width) ? areaSize.height : areaSize.width;
   if (gridLayer == null) {
     gridLayer = new paper.Layer();
   } else {
@@ -350,16 +340,16 @@ function createGrid(newGridSize) {
     paper.project._activeLayer = gridLayer;
   }
   for (var i = newGridSize; i < maxSize; i += newGridSize) {
-    if (i < defaultSize.height) {
+    if (i < areaSize.height) {
       var p = new paper.Path();
-      p.add(new paper.Point(0, i), new paper.Point(defaultSize.width, i));
+      p.add(new paper.Point(0, i), new paper.Point(areaSize.width, i));
       p.strokeColor = 'lightgray';
       p.strokeWidth = 0.5;
       p.dashArray = [2, 3];
     }
-    if (i < defaultSize.width) {
+    if (i < areaSize.width) {
       var p = new paper.Path();
-      p.add(new paper.Point(i, 0), new paper.Point(i, defaultSize.height));
+      p.add(new paper.Point(i, 0), new paper.Point(i, areaSize.height));
       p.strokeColor = 'lightgray';
       p.strokeWidth = 0.5;
       p.dashArray = [2, 3];
@@ -374,6 +364,7 @@ function createGrid(newGridSize) {
 
 function initcanvas() {
   paper.setup(document.getElementById('myCanvas'));
+  areaSize = {width: 1200, height: 800};
   createGrid(gridSize);
   paper.view.draw();
 }
@@ -382,6 +373,19 @@ function changeGrid(value) {
   var newGridSize = gridSize + value;
   if ((newGridSize < 10) || (newGridSize > 50)) {
     return;
+  }
+  areaSize = {width: 1200, height: 800};
+  if (elements.length > 0) {
+    for (var i = 0; i < elements.length; ++i) {
+      var wh = Math.round((elements[i].obj.bounds.x + elements[i].obj.bounds.width) * newGridSize / gridSize);
+      if (wh > areaSize.width) {
+        areaSize.width = wh;
+      }
+      wh = Math.round((elements[i].obj.bounds.y + elements[i].obj.bounds.height) * newGridSize / gridSize);
+      if (wh > areaSize.height) {
+        areaSize.height = wh;
+      }
+    }
   }
   createGrid(newGridSize);
   drawElements(newGridSize);
@@ -428,7 +432,7 @@ function saveElements(obj){
     }
     data.push(edt);
   }
-  xmlhttp.send("savedata=true&" + "&data=" + encodeURIComponent(JSON.stringify({gridSize: gridSize, data: data})));
+  xmlhttp.send("savedata=true&" + "&data=" + encodeURIComponent(JSON.stringify({gridSize: gridSize, areaSize: areaSize, data: data})));
   xmlhttp.onreadystatechange = function() {
     if (xmlhttp.readyState == 4) {
       if(xmlhttp.status == 200) {
@@ -466,7 +470,7 @@ function loadElements(obj){
   var loader = document.createElement("input");
   loader.setAttribute("type", "file");
   loader.onchange = function(){
-    // console.log('were changes');
+    console.log('were changes');
     var formData = new FormData();
     formData.append("thefile", loader.files[0]);
     formData.append("loaddata", 'true');
@@ -476,13 +480,15 @@ function loadElements(obj){
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         if(xhr.status == 200) {
-          // console.log('answer exists!');
+          console.log('answer exists!');
           try{
             var olddata = JSON.parse(xhr.responseText.replace(/^\s+/, '').replace(/\s+$/, ''));
           } catch (e) {
             console.log('error in data of loaded file');
             return;
           }
+          areaSize = olddata['areaSize'];
+          createGrid(olddata['gridSize']);
           elementLayer.clear();
           elements = [];
           allcounts = {};
@@ -494,7 +500,6 @@ function loadElements(obj){
             whatnowcreating = currentElement.type;
             showNewElement();
           }
-          createGrid(olddata['gridSize']);
           paper.view.draw();
           gridSize = olddata['gridSize'];
         // } else {

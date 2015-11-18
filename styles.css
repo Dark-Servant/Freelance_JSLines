@@ -1,31 +1,31 @@
 body {
-  /*border: 1px solid green; */
   width: 100%;
 }
-#myCanvas {
-  /*border: 1px solid red;*/
-}
+
 #objlib, #whatadded img.delete, #whatadded .options {
   display: none;
 }
-#paintarea, #whatadded {
-  display: inline-block;
+
+#elements {
+  vertical-align: top;
 }
+
 #whatadded {
   border-left: 1px solid black;
-  vertical-align: top;
   padding-left: 2px;
   overflow-y: auto;
-  /*height: 100%;*/
 }
+
 .button, #whatadded span, #whatadded img {
   cursor: pointer;
 }
+
 .button:hover{
   background-color: lightgray;
 }
+
 #myCanvasDiv{
   overflow: auto;
-  max-width: 1300px;
-  max-height: 900px;
+  max-width: 1215px;
+  max-height: 815px;
 }

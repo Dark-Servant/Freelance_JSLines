@@ -9,27 +9,32 @@
     <link rel='stylesheet' href="styles.css" type="text/css">
   </head>
   <body onload="initcanvas();">
-    <div id='paintarea'>
-      <div class='buttons'>
-        <img class='button line' onclick='startCreate(1);' alt='Создать линию' src='images/line.png'>
-        <img class='button arc' onclick='startCreate(2);' alt='Создать дугу' src='images/arc.png'>
-        <img class='button text' onclick='startCreate(3);' alt='Создать текст' src='images/text.png'>
-        <img class='button circle' onclick='startCreate(4);' alt='Создать окружность' src='images/circle.png'>
-      </div>
-      <div id="myCanvasDiv">
-        <canvas id="myCanvas" width='1200' height='800'></canvas>
-      </div>
-      <div class='buttons'>
-        <img class='button less' onclick='changeGrid(-10);' src='images/minus.png'>
-        <img class='button more' onclick='changeGrid(10);' src='images/plus.png'>
-        <img class='button rotate' onclick='runRotate(-1);' style="display: none" src='images/rotate2.png'>
-        <img class='button rotate' onclick='runRotate(1);' style="display: none" src='images/rotate.png'>
-        <img class='button saving' onclick='saveElements(this);' src='images/save.png'>
-        <img class='button loading' onclick='loadElements(this);' src='images/open.png'>
-      </div>
-    </div>
-    <div id='whatadded'>
-    </div>
+    <table border='0'>
+      <tbody>
+        <td>
+          <div class='buttons'>
+            <img class='button line' onclick='startCreate(1);' alt='Создать линию' src='images/line.png'>
+            <img class='button arc' onclick='startCreate(2);' alt='Создать дугу' src='images/arc.png'>
+            <img class='button text' onclick='startCreate(3);' alt='Создать текст' src='images/text.png'>
+            <img class='button circle' onclick='startCreate(4);' alt='Создать окружность' src='images/circle.png'>
+          </div>
+          <div id="myCanvasDiv">
+            <canvas id="myCanvas"></canvas>
+          </div>
+          <div class='buttons'>
+            <img class='button less' onclick='changeGrid(-10);' src='images/minus.png'>
+            <img class='button more' onclick='changeGrid(10);' src='images/plus.png'>
+            <img class='button rotate' onclick='runRotate(-1);' style="display: none" src='images/rotate2.png'>
+            <img class='button rotate' onclick='runRotate(1);' style="display: none" src='images/rotate.png'>
+            <img class='button saving' onclick='saveElements(this);' src='images/save.png'>
+            <img class='button loading' onclick='loadElements(this);' src='images/open.png'>
+          </div>
+        </td>
+        <td id='elements'>
+          <div id='whatadded'></div>
+        </td>
+      </tbody>
+    </table>
     <div id='objlib'>
       <div class='obj object1'>
         <span onclick="chooseElement(this);">Линия</span>
